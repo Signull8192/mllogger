@@ -5,6 +5,11 @@
 * Otherwise, you can specify directory name as use like by setting init=False
 * Arguments save/load
 
+## Installation
+```
+python setup.py install
+```
+
 ## Quick use
 
 ```
