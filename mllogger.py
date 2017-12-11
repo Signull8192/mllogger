@@ -68,7 +68,7 @@ class MLLogger(object):
         # Create symlink: if exists, remove old symlink
         try:
             os.symlink(self.log_fn, self.tmplog_name)
-        except (OSError, e):
+        except OSError as e:
             if e.errno == errno.EEXIST:
                 os.remove(self.tmplog_name)
                 os.symlink(self.log_fn, self.tmplog_name)
