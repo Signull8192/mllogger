@@ -38,7 +38,7 @@ class MLLogger(object):
                 self.initialize(self.__instance__, root_dir)
         return self.__instance__
 
-    def initialize(self, root_dir=None, dir_name=None):
+    def initialize(self, root_dir=None, dir_name=None, debug=False):
         if self.root_dir is None and root_dir is not None:
             self.root_dir = root_dir
         elif self.root_dir is None and root_dir is None:
@@ -48,16 +48,20 @@ class MLLogger(object):
         # Use current date as default output folder name
         self.dir_name = date.strftime('%y%m%d_%H%M%S') if dir_name is None else dir_name
         self.save_dir = os.path.join(self.root_dir, self.dir_name)
-
-        if not os.path.exists(self.save_dir):
-            os.makedirs(self.save_dir)
-        self.log_fn = os.path.join(self.save_dir, 'log_{}.txt'.format(self.dir_name))
         self.logger.setLevel(self.level)
+        self.debug = debug
 
         # CONSOLE
         sh = StreamHandler()
         sh.setLevel(self.level)
         self.logger.addHandler(sh)
+
+        if debug:
+            return
+
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
+        self.log_fn = os.path.join(self.save_dir, 'log_{}.txt'.format(self.dir_name))
 
         # FILE
         fh = FileHandler(self.log_fn, 'w')
@@ -98,4 +102,5 @@ class MLLogger(object):
         return self.save_dir
 
     def save_args(self, args):
-        save_args_as_json(args, os.path.join(self.save_dir, "args.json"))
+        if not self.debug:
+            save_args_as_json(args, os.path.join(self.save_dir, "args.json"))
