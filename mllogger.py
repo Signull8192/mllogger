@@ -56,12 +56,13 @@ class MLLogger(object):
         sh.setLevel(self.level)
         self.logger.addHandler(sh)
 
+        self.log_fn = os.path.join(self.save_dir, 'log_{}.txt'.format(self.dir_name))
+
         if debug:
             return
 
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
-        self.log_fn = os.path.join(self.save_dir, 'log_{}.txt'.format(self.dir_name))
 
         # FILE
         fh = FileHandler(self.log_fn, 'w')
