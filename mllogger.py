@@ -10,8 +10,10 @@ from __future__ import print_function
 from __future__ import division
 
 import os
+import sys
 import errno
 import datetime
+import pickle
 from logging import getLogger, StreamHandler, FileHandler, Formatter, INFO
 from arghelper import save_args_as_json
 
@@ -55,7 +57,6 @@ class MLLogger(object):
         sh = StreamHandler()
         sh.setLevel(self.level)
         self.logger.addHandler(sh)
-
         self.log_fn = os.path.join(self.save_dir, 'log_{}.txt'.format(self.dir_name))
 
         if debug:
@@ -103,5 +104,7 @@ class MLLogger(object):
         return self.save_dir
 
     def save_args(self, args):
+        protocol = 4 if sys.version_info[0] >= 3 else 2
         if not self.debug:
-            save_args_as_json(args, os.path.join(self.save_dir, "args.json"))
+            with open(os.path.join(self.save_dir, "args.pkl"), "wb") as f:
+                pickle.dump(args, f, protocol=protocol)
