@@ -27,12 +27,13 @@ class MLLogger(object):
         logger.info("Test message")
         save_dir = logger.get_savedir()
     """
-    def __new__(self, root_dir=None,
-                tmplog_name="latest_log.txt", level=INFO, init=True):
+    def __new__(self, root_dir=None, tmplog_name="latest_log.txt",
+                tmpdir_name="latest_dir", level=INFO, init=True):
         if not hasattr(self, "__instance__"):
             self.__instance__ = super(MLLogger, self).__new__(self)
             self.level = level
             self.tmplog_name = tmplog_name
+            self.tmpdir_name = tmpdir_name
             self.logger = getLogger('main')
             self.root_dir = root_dir
 
@@ -78,6 +79,14 @@ class MLLogger(object):
             if e.errno == errno.EEXIST:
                 os.remove(self.tmplog_name)
                 os.symlink(self.log_fn, self.tmplog_name)
+
+        # Create symlink: if exists, remove old symlink
+        try:
+            os.symlink(self.save_dir, self.tmpdir_name)
+        except OSError as e:
+            if e.errno == errno.EEXIST:
+                os.remove(self.tmpdir_name)
+                os.symlink(self.save_dir, self.tmpdir_name)
 
     def set_level(self, level):
         self.level = level
