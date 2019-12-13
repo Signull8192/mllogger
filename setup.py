@@ -10,6 +10,6 @@ from distutils.core import setup
 
 setup(name='mllogger',
       version='1.0',
-      py_modules=['mllogger', 'arghelper'],
+      py_modules=['mllogger', 'arghelper', 'summary_logger'],
       description='Simple logger and argument management for general experiments.',
 )
